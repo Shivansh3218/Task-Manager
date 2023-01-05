@@ -9,7 +9,6 @@ const textArea = document.querySelector(".text-area");
 const priorityContainer = document.querySelector(".priority-container");
 const priorityColorSmall = document.querySelectorAll(".priority-color-small");
 const taskItem = document.querySelectorAll(".task-item");
-// console.log(selectColor);
 
 // =====Global variables====
 let priority = ['high', 'medium', 'low', 'no-priority'];
@@ -20,7 +19,6 @@ let taskArr = [];
 // ===========================Modal======================//
 taskBtn.addEventListener("click", (e) => {
     // Display modal
-    console.log("Clicked on the button");
     modalCont.style.display = "flex";
     mainCont.classList.toggle("blur")
 })
@@ -38,7 +36,6 @@ priorityColor.forEach((element, idx) => {
     element.addEventListener("click", (e) => {
         priorityColor.forEach(em => {
             em.classList.remove("active");
-
         })
         selectPriority = priority[idx];
         e.target.classList.add("active");
@@ -90,7 +87,6 @@ function createTask(selectPriority, task, newTask = true, id = Date.now(), compl
         taskArr.push({ selectPriority, task, id, completed });
     }
     mainCont.appendChild(taskCont);
-    // console.log(taskArr)
 }
 
 // ==================================Task Item==============================
@@ -101,18 +97,14 @@ mainCont.addEventListener('click', (e) => {
     //==========lock unlock feature=================//
 
     if (e.target.classList.contains('lock-icon')) {
-        // console.log(e);
-
-        // console.log(e.target.parentElement.parentElement.parentElement);
 
         if (lockStatus) {
             e.target.classList.add('fa-lock-open');
             e.target.parentElement.previousElementSibling.style.display = 'flex';
             lockStatus = false;
         } else {
-            
+
             e.target.classList.remove('fa-lock-open')
-            console.log("lock Icon");
             e.target.parentElement.previousElementSibling.style.display = 'none';
             lockStatus = true;
             e.target.parentElement.parentElement.children[1].setAttribute('contenteditable', 'false');
@@ -125,24 +117,21 @@ mainCont.addEventListener('click', (e) => {
         let targetId = e.target.parentElement.nextElementSibling.classList[1];
         e.target.parentElement.parentElement.style.display = 'none';
         taskArr.forEach((el, idx) => {
-            // console.log(el.id)
             if (el.id == targetId) {
                 el.completed = !el.completed;
             }
         })
     }
 
-    
+
     // ============= Delete feature=====================
     else if (e.target.classList.contains('delete')) {
         let targetId = e.target.parentElement.nextElementSibling.classList[1];
-        // console.log('targid',targetId)
         e.target.style.color = 'red';
         setTimeout(() => {
             e.target.parentElement.parentElement.remove();
         }, 500);
         taskArr.forEach((el, idx) => {
-            // console.log(el.id)
             if (el.id == targetId) {
                 taskArr.splice(idx, 1);
             }
@@ -162,7 +151,6 @@ mainCont.addEventListener('click', (e) => {
             e.target.style.color = '';
             e.target.parentElement.previousElementSibling.setAttribute('contenteditable', 'false');
             taskArr.forEach((el, idx) => {
-                // console.log(el.id)
                 if (el.id == targetId) {
                     el.task = textArea.value;
                 }
@@ -175,7 +163,6 @@ mainCont.addEventListener('click', (e) => {
     else if (e.target.classList.contains('color')) {
         let targetId = e.target.parentElement.nextElementSibling.classList[1];
 
-        // console.log('I am color');
         let color = e.target.classList[3];
         colorIndex = priority.indexOf(color);
         if (colorIndex == 3) {
@@ -187,7 +174,6 @@ mainCont.addEventListener('click', (e) => {
         e.target.parentElement.parentElement.children[0].classList.add(priority[colorIndex + 1]);
         e.target.classList.add(priority[colorIndex + 1]);
         taskArr.forEach((el, idx) => {
-            // console.log(el.id)
             if (el.id == targetId) {
                 el.selectPriority = priority[colorIndex + 1];
             }
@@ -197,39 +183,39 @@ mainCont.addEventListener('click', (e) => {
 
 //=============================== Sorting by color========================
 priorityContainer.addEventListener('click', (e) => {
-        if(e.target.classList.contains("priority-color-small")){
-            priorityColorSmall.forEach(em => {
-                em.classList.remove("active");
-    
+    if (e.target.classList.contains("priority-color-small")) {
+        priorityColorSmall.forEach(em => {
+            em.classList.remove("active");
+
+        })
+        e.target.classList.add("active");
+
+        mainCont.textContent = null;
+        if (e.target.classList.contains('all')) {
+            taskArr.forEach(el => {
+                if (!el.completed) {
+                    createTask(el.selectPriority, el.task, false, el.id, el.completed);
+                }
             })
-            e.target.classList.add("active");
 
-            mainCont.textContent = null;
-    if(e.target.classList.contains('all')){
-        taskArr.forEach(el => {
-            if (!el.completed) {
-                createTask(el.selectPriority, el.task, false, el.id, el.completed);
-            }
-        })
-
-    }
-    else if (e.target.classList.contains('complete')) {
-        taskArr.forEach(el => {
-            if (el.completed) {
-                createTask(el.selectPriority, el.task, false, el.id, el.completed);
-            }
-        })
-
-    } else {
-        const targetPriority = e.target.classList[1];
-
-        taskArr.forEach(el => {
-            if ((el.selectPriority === targetPriority) && (!el.completed)) {
-                createTask(el.selectPriority, el.task, false, el.id, el.completed)
-            }
-        })
-
-    }
         }
- 
+        else if (e.target.classList.contains('complete')) {
+            taskArr.forEach(el => {
+                if (el.completed) {
+                    createTask(el.selectPriority, el.task, false, el.id, el.completed);
+                }
+            })
+
+        } else {
+            const targetPriority = e.target.classList[1];
+
+            taskArr.forEach(el => {
+                if ((el.selectPriority === targetPriority) && (!el.completed)) {
+                    createTask(el.selectPriority, el.task, false, el.id, el.completed)
+                }
+            })
+
+        }
+    }
+
 })
